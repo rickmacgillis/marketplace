@@ -7,6 +7,8 @@ use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
 use App\Events\ProjectCreatedEvent;
+use App\Events\ProjectClaimedEvent;
+use App\Listeners\ProjectClaimedListener;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -21,6 +23,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         ProjectCreatedEvent::class => [
             //
+        ],
+        ProjectClaimedEvent::class => [
+            ProjectClaimedListener::class,
         ],
     ];
 

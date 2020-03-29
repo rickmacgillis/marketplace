@@ -23,6 +23,10 @@ class Project extends Model {
         return $this->belongsTo(User::class, 'owner_id');
     }
     
+    public function contractor() {
+        return $this->belongsTo(User::class, 'contractor_id');
+    }
+    
     public static function openProjects() {
         return static::where('contractor_id', null)
             ->where('owner_id', '<>', Auth::id())

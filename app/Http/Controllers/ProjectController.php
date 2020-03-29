@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Events\ProjectCreatedEvent;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Http\Requests\SearchOpenProjectsRequest;
+use App\Events\ProjectClaimedEvent;
 
 class ProjectController extends Controller
 {
@@ -22,9 +23,22 @@ class ProjectController extends Controller
         $project->title = $request->title;
         $project->description = $request->description;
         $project->owner_id = Auth::id();
+        $project->skills = $request->skills;
         $project->save();
         
         event(new ProjectCreatedEvent($project));
+        
+        return response()->json([
+            'redirect' => route('home'),
+        ]);
+    }
+    
+    public function updateProject(UpdateProjectRequest $request) {
+        Project::where('owner_id', Auth::id())->where('id', $request->id)->update([
+            'title'         => $request->title,
+            'description'   => $request->description,
+            'skills'        => $request->skills,
+        ]);
         
         return response()->json([
             'redirect' => route('home'),
@@ -44,17 +58,6 @@ class ProjectController extends Controller
         }
         
         return response()->json($project);
-    }
-    
-    public function updateProject(UpdateProjectRequest $request) {
-        Project::where('owner_id', Auth::id())->where('id', $request->id)->update([
-            'title' => $request->title,
-            'description' => $request->description,
-        ]);
-        
-        return response()->json([
-            'redirect' => route('home'),
-        ]);
     }
     
     public function listProjects()
@@ -119,6 +122,8 @@ class ProjectController extends Controller
         
         $project->contractor_id = Auth::id();
         $project->save();
+        
+        event(new ProjectClaimedEvent($project));
         
         return response()->json([
             'redirect' => route('home'),

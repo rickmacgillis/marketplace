@@ -18,7 +18,7 @@ use App\Models\User;
 
 Route::group(['middleware' => 'web'], function (Router $router) {
     
-    Auth::routes();
+    Auth::routes(['verify' => true]);
     $router->get('/', 'WelcomeController@index')->name('welcome');
     
     $router->group(['middleware' => 'auth'], function (Router $router) {
